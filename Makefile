@@ -1,7 +1,8 @@
-
+# implementation of AVL Tree
+#
 OBJS = main.o AVL_Tree.o
 CXX = g++
-CFLAGS = -Wall -O2
+CFLAGS = -std=c++11 -Wall -O2 -g
 OUTPUT = AVL_Tree.out
 
 .PHONY: all
