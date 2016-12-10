@@ -10,6 +10,8 @@
 
 #define	_AVL_TREE_H_
 
+#include<memory>
+
 namespace myAVL{
 
 //Forward declaration
@@ -43,7 +45,7 @@ private:
 
 public:
 	//Constructor / Destructor
-	AVL_NODE();
+	AVL_NODE(KEY key, VAL value);
 	~AVL_NODE();
 
 	//Accessors
@@ -65,10 +67,6 @@ private:
 	//Member
 	unsigned long		m_ulCount;		//Number of nodes
 
-	//Constructor and Destructor
-	AVL_Tree();
-	~AVL_Tree();
-
 	//Release Tree Nodes
 	void ReleasePartialTree(AVL_NODE<KEY, VAL>* lpNode);
 
@@ -89,6 +87,10 @@ private:
 	unsigned char		CalcBFactor(AVL_NODE<KEY, VAL>* lpNode);
 
 public:
+	//Constructor and Destructor
+	AVL_Tree();
+	~AVL_Tree();
+
 	//Accesors
 	AVL_NODE<KEY, VAL>*	find(KEY key);
 	bool				insert(KEY key, VAL val);

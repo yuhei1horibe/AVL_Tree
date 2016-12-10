@@ -16,13 +16,15 @@ using namespace myAVL;
 
 //Constructor of AVL_NODE
 template <class KEY, class VAL>
-AVL_NODE<KEY, VAL>::AVL_NODE()
+AVL_NODE<KEY, VAL>::AVL_NODE(KEY key, VAL value)
 {
 	//Calling constructor of key and value
-	m_key.KEY();
-	m_value.VAL();
+	m_key		= key;
+	m_value		= value;
 
 	//Initialization of pointer
+	//After start using smart pointers,
+	//I shouldn't initialize pointers.
 	m_lpLeft	= NULL;
 	m_lpRight	= NULL;
 
@@ -33,6 +35,13 @@ AVL_NODE<KEY, VAL>::AVL_NODE()
 	m_uHeight	= 0;
 }
 
+//Accessor
+template <class KEY, class VAL>
+VAL AVL_NODE<KEY, VAL>::get_val()
+{
+	return m_value;
+}
+
 //Destractor of AVL_NODE
 template <class KEY, class VAL>
 AVL_NODE<KEY, VAL>::~AVL_NODE()
@@ -40,12 +49,10 @@ AVL_NODE<KEY, VAL>::~AVL_NODE()
 	//It must be deleted by AVL_TREE Algorithm class
 	//It musn't be executed this blacket
 	if(m_lpLeft != NULL){
-		delete	m_lpLeft;
 		m_lpLeft	= NULL;
 	}
 
 	if(m_lpRight != NULL){
-		delete	m_lpRight;
 		m_lpRight	= NULL;
 	}
 
@@ -91,8 +98,8 @@ unsigned char AVL_Tree<KEY, VAL>::FixHeight(AVL_NODE<KEY, VAL> *lpNode)
 	if(lpNode == NULL)
 		return 0;
 
-	hl	= lpNode->m_lpLeft == NULL	? 0 : lpNode->m_lpLeft->m_lpHeight;
-	hr	= lpNode->m_lpRight == NULL	? 0 : lpNode->m_lpRight->m_lpHeight;
+	hl	= lpNode->m_lpLeft == NULL	? 0 : lpNode->m_lpLeft->m_uHeight;
+	hr	= lpNode->m_lpRight == NULL	? 0 : lpNode->m_lpRight->m_uHeight;
 
 	return lpNode->m_uHeight = (hl > hr ? hl : hr) + 1;
 }
@@ -139,8 +146,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::RRotate(AVL_NODE<KEY, VAL>* lpTop, AVL_N
 	p = lpLeft->m_lpRight;
 	q = lpTop;
 
-	lpTop->m_lpLeft = p;
-	lpLeft->m_lpRight = q;
+	lpTop->m_lpLeft		= p;
+	lpLeft->m_lpRight	=q;
 
 	return lpLeft;
 }
@@ -172,7 +179,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::balance(AVL_NODE<KEY, VAL>* lpNode)
 		if(CalcBFactor(lpNode->m_lpRight) > 0){
 			RRotate(lpNode->m_lpRight, lpNode->m_lpRight->m_lpLeft);
 		}
-		LRotate(lpNode, lpNode->lpRight);
+		LRotate(lpNode, lpNode->m_lpRight);
 	}
 	//Recalculate height of both nodes
 	FixHeight(lpNode->m_lpLeft);
@@ -218,7 +225,7 @@ template <class KEY, class VAL>
 bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 {
 	//In case of memory allocation failure or same key exist, return false
-	if(insert_internal(m_lpTreeTop, key, value) == NULL)
+	if((m_lpTreeTop = insert_internal(m_lpTreeTop, key, value)) == NULL)
 		return false;
 
 	//Update inorder list
@@ -243,18 +250,18 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 	AVL_NODE<KEY, VAL>*		lpNewNode;
 	AVL_NODE<KEY, VAL>*		lpTemp;
 
+	lpTemp	= NULL;
+
 	//If this node is NULL, insert here
 	if(lpNode == NULL){
 		//Set key and value
 		//left and right pointers are initialized to "NULL"by constructor
-		lpNewNode			= new AVL_NODE<KEY, VAL>;
+		lpNewNode			= new AVL_NODE<KEY, VAL>(key, value);
+
 
 		//If allocation failure, return NULL
 		if(lpNewNode == NULL)
 			return NULL;
-
-		lpNewNode->m_key	= key;
-		lpNewNode->m_value	= value;
 
 		return lpNewNode;
 	}
@@ -266,7 +273,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 
 	else if(key < lpNode->m_key){
 		//Memory allocation failure or the same key exist
-		if((lpNewNode = insert_internal(lpNode->m_lpLeft)) == NULL)
+		if((lpNewNode = insert_internal(lpNode->m_lpLeft, key, value)) == NULL)
 			return NULL;
 
 		lpNode->m_lpLeft	= lpNewNode;
@@ -289,7 +296,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 
 	else{
 		//Memory allocation failure or the same key exist
-		if ((lpNewNode = insert_internal(lpNode->m_lpRight)) == NULL)
+		if ((lpNewNode = insert_internal(lpNode->m_lpRight, key, value)) == NULL)
 			return NULL;
 
 		lpNode->m_lpRight	= lpNewNode;
@@ -306,7 +313,36 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 		//Balance the tree
 		balance(lpNode);
 	}
-	return lpTemp;
+	return lpNode;
+}
+
+//find
+template <class KEY, class VAL>
+AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find(KEY key)
+{
+	AVL_NODE<KEY, VAL>*	wp;
+
+	wp	= m_lpTreeTop;
+
+	while(1){
+		if(wp == NULL){
+			return NULL;
+		}
+
+		else if(wp->m_key == key){
+			return wp;
+		}
+
+		else if(wp->m_key > key){
+			wp	= wp->m_lpLeft;
+		}
+
+		else{
+			wp	= wp->m_lpRight;
+		}
+	}
+
+	return NULL;
 }
 
 //size
