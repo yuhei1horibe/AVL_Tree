@@ -10,11 +10,13 @@ OUTPUT = AVL_Tree.out
 all: main
 
 main: $(OBJS)
-	cat AVL_Tree.h | sed 's/\#define DEBUG/\/\/#define DEBUG/g' > AVL_Tree.h
+	cat AVL_Tree.h | sed 's/^\#define DEBUG/\/\/#define DEBUG/g' > tmp.h
+	mv tmp.h AVL_Tree.h
 	$(CXX) -o $(OUTPUT) $(OBJS) $(CFLAGS)
 
 debug: $(OBJS)
-	cat AVL_Tree.h | sed 's/\/\/\#define DEBUG/\#define DEBUG/g' > AVL_Tree.h
+	cat AVL_Tree.h | sed 's/^\/\/\#define DEBUG/\#define DEBUG/g' > tmp.h
+	mv tmp.h AVL_Tree.h
 	$(CXX) -o $(OUTPUT) $(OBJS) $(DEBUGFLAGS)
 
 .SUFFIXES: .o.cpp

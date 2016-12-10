@@ -12,6 +12,8 @@
 
 #include<memory>
 
+//#define DEBUG
+
 namespace myAVL{
 
 //Forward declaration
