@@ -236,13 +236,17 @@ void AVL_Tree<KEY, VAL>::ReleasePartialTree(AVL_NODE<KEY, VAL>* lpNode)
 template <class KEY, class VAL>
 bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 {
+	AVL_NODE<KEY, VAL>*	tmp;
+
 	//In case of memory allocation failure or same key exist, return false
-	if((m_lpTreeTop = insert_internal(m_lpTreeTop, key, value)) == NULL){
+	if((tmp = insert_internal(m_lpTreeTop, key, value)) == NULL){
 #ifdef DEBUG
 		std::cerr << "Allocation Failure." << std::endl;
+		std::cerr << "Or the key already exist" << std::endl;
 #endif
 		return false;
 	}
+	m_lpTreeTop	= tmp;
 
 	//Update inorder list
 	if(m_lpListHead == NULL){
@@ -264,9 +268,9 @@ template <class KEY, class VAL>
 AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNode, KEY key, VAL value)
 {
 	AVL_NODE<KEY, VAL>*		lpNewNode;
-	AVL_NODE<KEY, VAL>*		lpTemp;
+	//AVL_NODE<KEY, VAL>*		lpTemp;
 
-	lpTemp	= NULL;
+	//lpTemp	= NULL;
 
 	//If this node is NULL, insert here
 	if(lpNode == NULL){
@@ -284,6 +288,9 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 
 	//If the same key exist, return NULL
 	if(key == lpNode->m_key){
+#ifdef DEBUG
+		std::cerr << "The Key:" << key << " already exist." << std::endl;
+#endif
 		return NULL;
 	}
 
@@ -298,19 +305,18 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 		}
 
 		lpNode->m_lpLeft	= lpNewNode;
-
+/*
 		//Update the inorder loop list
 		if(lpNewNode->m_lpNext == NULL){
 			if(m_lpListHead == lpNode)
 				m_lpListHead	= lpNode->m_lpLeft;
-
 			lpTemp						= lpNode->m_lpPrev;
 			lpNode->m_lpPrev			= lpNode->m_lpLeft;
 			lpNode->m_lpLeft->m_lpNext	= lpNode;
 			lpNode->m_lpLeft->m_lpPrev	= lpTemp;
 			lpTemp->m_lpNext			= lpNode->m_lpLeft;
 		}
-
+*/
 		//Balance the tree
 		lpNode	= balance(lpNode);
 	}
@@ -326,7 +332,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 		}
 
 		lpNode->m_lpRight	= lpNewNode;
-
+/*
 		//Update the inorder list
 		if(lpNewNode->m_lpPrev == NULL){
 			lpTemp						= lpNode->m_lpNext;
@@ -335,7 +341,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 			lpNode->m_lpRight->m_lpPrev	= lpNode;
 			lpTemp->m_lpPrev			= lpNode->m_lpRight;
 		}
-
+*/
 		//Balance the tree
 		lpNode	= balance(lpNode);
 	}

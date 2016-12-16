@@ -31,11 +31,12 @@ int main(int argc, char *argv[])
 	for(i = 0; ATree.size() < 100; i++){
 		//ATree.insert(i, (101 - i));
 		//ATree.insert((99 - i), i);
-		ATree.insert(rand() % 120, (101 - i));
-	}
-
+		key	= rand() % 100;
+		ATree.insert(key, (101 - key));
 #ifdef DEBUG
-	cout << "Size of the tree:" << ATree.size() << endl;
+		cout << "Generated key: " << key << endl;
+		cout << "Size: " << ATree.size() << endl;
+	}
 #endif
 
 	//Search test
