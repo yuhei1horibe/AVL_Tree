@@ -11,8 +11,9 @@
 #define	_AVL_TREE_H_
 
 #include<memory>
+#include<iostream>
 
-//#define DEBUG
+#define DEBUG
 
 namespace myAVL{
 
@@ -53,6 +54,10 @@ public:
 	//Accessors
 	VAL		get_val();
 	bool	update_val(VAL value);
+
+#ifdef DEBUG
+	unsigned int	get_height();
+#endif
 };
 
 //Definition of AVL Tree Algorithm
@@ -86,7 +91,7 @@ private:
 	//Member methods
 	//Calculation of height and Balance Factor
 	unsigned char		FixHeight(AVL_NODE<KEY, VAL>* lpNode);
-	unsigned char		CalcBFactor(AVL_NODE<KEY, VAL>* lpNode);
+	signed char			CalcBFactor(AVL_NODE<KEY, VAL>* lpNode);
 
 public:
 	//Constructor and Destructor

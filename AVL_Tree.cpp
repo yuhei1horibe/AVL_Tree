@@ -42,6 +42,15 @@ VAL AVL_NODE<KEY, VAL>::get_val()
 	return m_value;
 }
 
+//Return height
+#ifdef DEBUG
+template <class KEY, class VAL>
+unsigned int AVL_NODE<KEY, VAL>::get_height()
+{
+	return m_uHeight;
+}
+#endif
+
 //Destractor of AVL_NODE
 template <class KEY, class VAL>
 AVL_NODE<KEY, VAL>::~AVL_NODE()
@@ -106,7 +115,7 @@ unsigned char AVL_Tree<KEY, VAL>::FixHeight(AVL_NODE<KEY, VAL> *lpNode)
 
 //Calculation of balance factor
 template <class KEY, class VAL>
-unsigned char AVL_Tree<KEY, VAL>::CalcBFactor(AVL_NODE<KEY, VAL> *lpNode)
+signed char AVL_Tree<KEY, VAL>::CalcBFactor(AVL_NODE<KEY, VAL> *lpNode)
 {
 	unsigned char	hl;		//Height of left node
 	unsigned char	hr;		//Height of right node
@@ -117,7 +126,7 @@ unsigned char AVL_Tree<KEY, VAL>::CalcBFactor(AVL_NODE<KEY, VAL> *lpNode)
 	hl	= FixHeight(lpNode->m_lpLeft);
 	hr	= FixHeight(lpNode->m_lpRight);
 
-	return hl - hr;
+	return (signed char)hl - (signed char)hr;
 }
 
 //Left directional rotation
@@ -130,10 +139,11 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::LRotate(AVL_NODE<KEY, VAL>* lpTop, AVL_N
 	p	= lpRight->m_lpLeft;
 	q	= lpTop;
 
-	lpTop->m_lpRight	= p;
-	lpRight->m_lpLeft	= q;
+	lpRight->m_lpLeft			= q;
+	lpTop						= lpRight;
+	lpTop->m_lpLeft->m_lpRight	= p;
 
-	return lpRight;
+	return lpTop;
 }
 
 //Right directional rotation
@@ -146,44 +156,46 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::RRotate(AVL_NODE<KEY, VAL>* lpTop, AVL_N
 	p = lpLeft->m_lpRight;
 	q = lpTop;
 
-	lpTop->m_lpLeft		= p;
-	lpLeft->m_lpRight	=q;
+	lpLeft->m_lpRight			= q;
+	lpTop						= lpLeft;
+	lpTop->m_lpRight->m_lpLeft	= p;
 
-	return lpLeft;
+	return lpTop;
 }
 
 //Balancing
 template <class KEY, class VAL>
 AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::balance(AVL_NODE<KEY, VAL>* lpNode)
 {
-	unsigned char	uBFactor;
+	signed char	cBFactor;
 
 	if(lpNode == NULL)
 		return NULL;
 
 	//Get balance factor
-	uBFactor	= CalcBFactor(lpNode);
+	cBFactor	= CalcBFactor(lpNode);
 
 	//Left node is heavier
-	if(uBFactor == 2){
+	if(cBFactor == 2){
 		//The case requires double rotation
 		if(CalcBFactor(lpNode->m_lpLeft) < 0){
-			LRotate(lpNode->m_lpLeft, lpNode->m_lpLeft->m_lpRight);
+			lpNode->m_lpLeft	= LRotate(lpNode->m_lpLeft, lpNode->m_lpLeft->m_lpRight);
 		}
-		RRotate(lpNode, lpNode->m_lpLeft);
+		lpNode	= RRotate(lpNode, lpNode->m_lpLeft);
 	}
 
 	//Right node is heavier
-	else if(uBFactor == -2){
+	else if(cBFactor == -2){
 		//The case requires double rotation
 		if(CalcBFactor(lpNode->m_lpRight) > 0){
-			RRotate(lpNode->m_lpRight, lpNode->m_lpRight->m_lpLeft);
+			lpNode->m_lpRight	= RRotate(lpNode->m_lpRight, lpNode->m_lpRight->m_lpLeft);
 		}
-		LRotate(lpNode, lpNode->m_lpRight);
+		lpNode	= LRotate(lpNode, lpNode->m_lpRight);
 	}
 	//Recalculate height of both nodes
 	FixHeight(lpNode->m_lpLeft);
 	FixHeight(lpNode->m_lpRight);
+	FixHeight(lpNode);
 
 	return lpNode;
 }
@@ -225,8 +237,12 @@ template <class KEY, class VAL>
 bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 {
 	//In case of memory allocation failure or same key exist, return false
-	if((m_lpTreeTop = insert_internal(m_lpTreeTop, key, value)) == NULL)
+	if((m_lpTreeTop = insert_internal(m_lpTreeTop, key, value)) == NULL){
+#ifdef DEBUG
+		std::cerr << "Allocation Failure." << std::endl;
+#endif
 		return false;
+	}
 
 	//Update inorder list
 	if(m_lpListHead == NULL){
@@ -273,8 +289,13 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 
 	else if(key < lpNode->m_key){
 		//Memory allocation failure or the same key exist
-		if((lpNewNode = insert_internal(lpNode->m_lpLeft, key, value)) == NULL)
+		if((lpNewNode = insert_internal(lpNode->m_lpLeft, key, value)) == NULL){
+#ifdef DEBUG
+			std::cerr << "Allocation to left node failure." << std::endl;
+			std::cerr << "lpNode:" << lpNode << std::endl;
+#endif
 			return NULL;
+		}
 
 		lpNode->m_lpLeft	= lpNewNode;
 
@@ -291,13 +312,18 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 		}
 
 		//Balance the tree
-		balance(lpNode);
+		lpNode	= balance(lpNode);
 	}
 
 	else{
 		//Memory allocation failure or the same key exist
-		if ((lpNewNode = insert_internal(lpNode->m_lpRight, key, value)) == NULL)
+		if ((lpNewNode = insert_internal(lpNode->m_lpRight, key, value)) == NULL){
+#ifdef DEBUG
+			std::cerr << "Allocation to right node failure." << std::endl;
+			std::cerr << "lpNode:" << lpNode << std::endl;
+#endif
 			return NULL;
+		}
 
 		lpNode->m_lpRight	= lpNewNode;
 
@@ -311,7 +337,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 		}
 
 		//Balance the tree
-		balance(lpNode);
+		lpNode	= balance(lpNode);
 	}
 	return lpNode;
 }

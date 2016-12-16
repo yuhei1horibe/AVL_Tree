@@ -21,7 +21,7 @@ debug: $(OBJS)
 
 .SUFFIXES: .o.cpp
 .cpp.o:
-	g++ $(CFLAGS) -c $<
+	g++ $(DEBUGFLAGS) -c $<
 
 main.o: AVL_Tree.h
 main.o: AVL_Tree.cpp
