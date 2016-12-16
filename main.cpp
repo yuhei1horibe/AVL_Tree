@@ -28,9 +28,10 @@ int main(int argc, char *argv[])
 
 	srand((unsigned int)time(NULL));
 
-	for(i = 0; i < 100; i++){
+	for(i = 0; ATree.size() < 100; i++){
 		//ATree.insert(i, (101 - i));
-		ATree.insert((99 - i), i);
+		//ATree.insert((99 - i), i);
+		ATree.insert(rand() % 120, (101 - i));
 	}
 
 #ifdef DEBUG
