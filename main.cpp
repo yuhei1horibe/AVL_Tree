@@ -36,8 +36,8 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
 		cout << "Generated key: " << key << endl;
 		cout << "Size: " << ATree.size() << endl;
-	}
 #endif
+	}
 
 	//Search test
 	for(i = 0; i < 1000; i++){

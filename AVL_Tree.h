@@ -84,8 +84,9 @@ private:
 	AVL_NODE<KEY, VAL>*	balance(AVL_NODE<KEY, VAL>* lpNode);								//balancing
 	AVL_NODE<KEY, VAL>*	RRotate(AVL_NODE<KEY, VAL>* lpTop, AVL_NODE<KEY, VAL>* lpLeft);		//Rotation
 	AVL_NODE<KEY, VAL>*	LRotate(AVL_NODE<KEY, VAL>* lpTop, AVL_NODE<KEY, VAL>* lpRight);
-//	AVL_NODE<KEY, VAL>*	remove_min(AVL_NODE<KEY, VAL>* lpNode);								//find and remove the minimum key from partial tree
-//	AVL_NODE<KEY, VAL>*	find_min(AVL_NODE<KEY, VAL>* lpNode);								//find the node has minimum key
+	AVL_NODE<KEY, VAL>*	remove_min(AVL_NODE<KEY, VAL>* lpNode);								//find and remove the minimum key from partial tree
+	AVL_NODE<KEY, VAL>*	remove_internal(AVL_NODE<KEY, VAL>* lpNode, KEY key);				//find and remove the node has the same key.
+	AVL_NODE<KEY, VAL>*	find_min(AVL_NODE<KEY, VAL>* lpNode);								//find the node has minimum key
 	AVL_NODE<KEY, VAL>*	insert_internal(AVL_NODE<KEY, VAL>* lpNode, KEY key, VAL value);	//insert new node
 
 	//Member methods
@@ -101,7 +102,7 @@ public:
 	//Accesors
 	AVL_NODE<KEY, VAL>*	find(KEY key);
 	bool				insert(KEY key, VAL val);
-//	bool				remove(KEY key);//TODO
+	void				remove(KEY key);
 	void				release_all();
 	unsigned long		size();
 

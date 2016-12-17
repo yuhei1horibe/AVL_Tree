@@ -377,6 +377,105 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find(KEY key)
 	return NULL;
 }
 
+//Remove node from the Tree
+template<class KEY, class VAL>
+void AVL_Tree<KEY, VAL>::remove(KEY key)
+{
+	m_lpTreeTop	= remove_internal(m_lpTreeTop, key);
+}
+
+//Remove node (internal use)
+template<class KEY, class VAL>
+AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNode, KEY key)
+{
+	AVL_NODE<KEY, VAL>*	lpTmp;
+
+	if(lpNode == NULL){
+		return NULL;
+	}
+
+	//If this node is the target
+	if(key == lpNode->m_key){
+		//Find the minimum node from right sub-tree.
+		lpTmp	= find_min(lpNode->m_lpRight);
+
+		//If it's NULL, that means, this node is the leaf.
+		//Delete this Node.
+		if(lpTmp == NULL){
+			lpTmp	= lpNode->m_lpLeft;
+		}
+
+		else{
+			//Remove the node has minimum value from right sub-tree.
+			lpNode->m_lpRight	= remove_min(lpNode->m_lpRight);
+
+			//Replace this node to the minimum node from right.
+			lpTmp->m_lpRight	= lpNode->m_lpRight;
+			lpTmp->m_lpLeft		= lpNode->m_lpLeft;
+		}
+		delete lpNode;
+	}
+
+	//Find and delete
+	else if(lpNode->m_key > key){
+		//Replace left side node to new node.
+		lpNode->m_lpLeft	= remove_internal(lpNode->m_lpLeft, key);
+		lpTmp	= balance(lpNode);
+	}
+
+	else{
+		//Replace Right side node to new node.
+		lpNode->m_lpRight	= remove_internal(lpNode->m_lpRight, key);
+		lpTmp	= balance(lpNode);
+	}
+	return lpTmp;
+}
+
+//Find the node has minimum value
+template<class KEY, class VAL>
+AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find_min(AVL_NODE<KEY, VAL>* lpNode)
+{
+	AVL_NODE<KEY, VAL>*	lpTmp;
+
+	if(lpNode == NULL)
+		return NULL;
+
+	lpTmp	= lpNode;
+
+	while(1){
+		if(lpTmp->m_lpLeft == NULL)
+			return lpTmp;
+
+		lpTmp	= lpTmp->m_lpLeft;
+	}
+	//Unreacheable
+	return NULL;
+}
+
+//Remove the node has minimum value
+template<class KEY, class VAL>
+AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
+{
+	
+	AVL_NODE<KEY, VAL>*	lpTmp;
+
+	//Only one special case
+	if(lpNode == NULL)
+		return NULL;
+
+	//If this node has the minimum.
+	else if(lpNode->m_lpLeft == NULL){
+		lpTmp	= lpNode->m_lpRight;
+		delete lpNode;
+	}
+
+	else{
+		lpTmp	= remove_min(lpTmp->m_lpLeft);
+		lpTmp	= balance(lpTmp);
+	}
+	return lpTmp;
+}
+
 //size
 template <class KEY, class VAL>
 unsigned long AVL_Tree<KEY, VAL>::size()
