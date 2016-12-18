@@ -65,5 +65,34 @@ int main(int argc, char *argv[])
 	cout << "Maximum Height:" << maximum << endl;
 	cout << "Expected Height:" << (log(100.0) / log(2.0)) << endl;
 #endif
+
+	//Remove function test.
+	for(i = 0; i < 100; i++){
+		ATree.remove((50 + (99 - i)) % 100);
+		maximum	= 0;
+
+		for(int j = 0; j < (99 - i); j++){
+			tmp	= ATree.find((50 + j) % 100);
+
+			//Error. Node didn't find.
+			if(tmp == NULL){
+				cout << "Error. Node " << (50 + j) % 100 << "doesn't exits." << endl;
+				return -1;
+			}
+			if(maximum < tmp->get_height()){
+				maximum	= tmp->get_height();
+			}
+#ifdef DEBUG
+			cerr << "    key :" << (50 + j) % 100 << " found." << endl;
+#endif
+		}
+		if((tmp = ATree.find((50 + (99 - i)) % 100)) == NULL)
+			cout << "Key: " << (50 + (99 - i)) % 100 << " successfully removed." << endl;
+		else
+			cout << "Key: " << (50 + (99 - i)) % 100 << " still exist" << endl;
+		cout << "Max height: " << maximum << endl;
+		cout << "Expected Height:" << (log((double)ATree.size()) / log(2.0)) << endl;
+	}
+
 	return 0;
 }

@@ -414,6 +414,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNo
 			lpTmp->m_lpLeft		= lpNode->m_lpLeft;
 		}
 		delete lpNode;
+		m_ulCount--;
 	}
 
 	//Find and delete
@@ -466,7 +467,6 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
 	//If this node has the minimum.
 	else if(lpNode->m_lpLeft == NULL){
 		lpTmp	= lpNode->m_lpRight;
-		delete lpNode;
 	}
 
 	else{
