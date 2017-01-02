@@ -25,12 +25,12 @@ AVL_NODE<KEY, VAL>::AVL_NODE(KEY key, VAL value)
 	//Initialization of pointer
 	//After start using smart pointers,
 	//I shouldn't initialize pointers.
-	m_lpLeft	= NULL;
-	m_lpRight	= NULL;
+	m_lpLeft	= nullptr;
+	m_lpRight	= nullptr;
 
 	//Internal inorder list
-	m_lpNext	= NULL;
-	m_lpPrev	= NULL;
+	m_lpNext	= nullptr;
+	m_lpPrev	= nullptr;
 
 	m_uHeight	= 0;
 }
@@ -57,16 +57,16 @@ AVL_NODE<KEY, VAL>::~AVL_NODE()
 {
 	//It must be deleted by AVL_TREE Algorithm class
 	//It musn't be executed this blacket
-	if(m_lpLeft != NULL){
-		m_lpLeft	= NULL;
+	if(m_lpLeft != nullptr){
+		m_lpLeft	= nullptr;
 	}
 
-	if(m_lpRight != NULL){
-		m_lpRight	= NULL;
+	if(m_lpRight != nullptr){
+		m_lpRight	= nullptr;
 	}
 
-	m_lpNext	= NULL;
-	m_lpPrev	= NULL;
+	m_lpNext	= nullptr;
+	m_lpPrev	= nullptr;
 }
 
 //*************************************************
@@ -78,9 +78,9 @@ template <class KEY, class VAL>
 AVL_Tree <KEY, VAL>::AVL_Tree()
 {
 	m_ulCount		= 0;
-	m_lpTreeTop		= NULL;
-	m_lpListHead	= NULL;
-	m_lpCurrentPt	= NULL;
+	m_lpTreeTop		= nullptr;
+	m_lpListHead	= nullptr;
+	m_lpCurrentPt	= nullptr;
 }
 
 //Destructor
@@ -104,11 +104,11 @@ unsigned char AVL_Tree<KEY, VAL>::FixHeight(AVL_NODE<KEY, VAL> *lpNode)
 	unsigned char	hl;		//Height of left node
 	unsigned char	hr;		//Height of right node
 
-	if(lpNode == NULL)
+	if(lpNode == nullptr)
 		return 0;
 
-	hl	= lpNode->m_lpLeft == NULL	? 0 : lpNode->m_lpLeft->m_uHeight;
-	hr	= lpNode->m_lpRight == NULL	? 0 : lpNode->m_lpRight->m_uHeight;
+	hl	= lpNode->m_lpLeft == nullptr	? 0 : lpNode->m_lpLeft->m_uHeight;
+	hr	= lpNode->m_lpRight == nullptr	? 0 : lpNode->m_lpRight->m_uHeight;
 
 	return lpNode->m_uHeight = (hl > hr ? hl : hr) + 1;
 }
@@ -120,7 +120,7 @@ signed char AVL_Tree<KEY, VAL>::CalcBFactor(AVL_NODE<KEY, VAL> *lpNode)
 	unsigned char	hl;		//Height of left node
 	unsigned char	hr;		//Height of right node
 
-	if(lpNode == NULL)
+	if(lpNode == nullptr)
 		return 0;
 
 	hl	= FixHeight(lpNode->m_lpLeft);
@@ -169,8 +169,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::balance(AVL_NODE<KEY, VAL>* lpNode)
 {
 	signed char	cBFactor;
 
-	if(lpNode == NULL)
-		return NULL;
+	if(lpNode == nullptr)
+		return nullptr;
 
 	//Get balance factor
 	cBFactor	= CalcBFactor(lpNode);
@@ -206,9 +206,9 @@ void AVL_Tree<KEY, VAL>::release()
 {
 	ReleasePartialTree(m_lpTreeTop);
 
-	m_lpTreeTop		= NULL;
-	m_lpListHead	= NULL;
-	m_lpCurrentPt	= NULL;
+	m_lpTreeTop		= nullptr;
+	m_lpListHead	= nullptr;
+	m_lpCurrentPt	= nullptr;
 
 	m_ulCount		= 0;
 
@@ -219,14 +219,14 @@ void AVL_Tree<KEY, VAL>::release()
 template <class KEY, class VAL>
 void AVL_Tree<KEY, VAL>::ReleasePartialTree(AVL_NODE<KEY, VAL>* lpNode)
 {
-	if(lpNode == NULL)
+	if(lpNode == nullptr)
 		return ;
 
 	ReleasePartialTree(lpNode->m_lpLeft);
 	ReleasePartialTree(lpNode->m_lpRight);
 
 	delete lpNode;
-	lpNode	= NULL;
+	lpNode	= nullptr;
 
 	return ;
 }
@@ -239,7 +239,7 @@ bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 	AVL_NODE<KEY, VAL>*	tmp;
 
 	//In case of memory allocation failure or same key exist, return false
-	if((tmp = insert_internal(m_lpTreeTop, key, value)) == NULL){
+	if((tmp = insert_internal(m_lpTreeTop, key, value)) == nullptr){
 #ifdef DEBUG
 		std::cerr << "Allocation Failure." << std::endl;
 		std::cerr << "Or the key already exist" << std::endl;
@@ -249,7 +249,7 @@ bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 	m_lpTreeTop	= tmp;
 
 	//Update inorder list
-	if(m_lpListHead == NULL){
+	if(m_lpListHead == nullptr){
 		m_lpListHead			= m_lpTreeTop;
 
 		//Loop list
@@ -270,44 +270,44 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 	AVL_NODE<KEY, VAL>*		lpNewNode;
 	//AVL_NODE<KEY, VAL>*		lpTemp;
 
-	//lpTemp	= NULL;
+	//lpTemp	= nullptr;
 
-	//If this node is NULL, insert here
-	if(lpNode == NULL){
+	//If this node is nullptr, insert here
+	if(lpNode == nullptr){
 		//Set key and value
-		//left and right pointers are initialized to "NULL"by constructor
+		//left and right pointers are initialized to "nullptr"by constructor
 		lpNewNode			= new AVL_NODE<KEY, VAL>(key, value);
 
 
-		//If allocation failure, return NULL
-		if(lpNewNode == NULL)
-			return NULL;
+		//If allocation failure, return nullptr
+		if(lpNewNode == nullptr)
+			return nullptr;
 
 		return lpNewNode;
 	}
 
-	//If the same key exist, return NULL
+	//If the same key exist, return nullptr
 	if(key == lpNode->m_key){
 #ifdef DEBUG
 		std::cerr << "The Key:" << key << " already exist." << std::endl;
 #endif
-		return NULL;
+		return nullptr;
 	}
 
 	else if(key < lpNode->m_key){
 		//Memory allocation failure or the same key exist
-		if((lpNewNode = insert_internal(lpNode->m_lpLeft, key, value)) == NULL){
+		if((lpNewNode = insert_internal(lpNode->m_lpLeft, key, value)) == nullptr){
 #ifdef DEBUG
 			std::cerr << "Allocation to left node failure." << std::endl;
 			std::cerr << "lpNode:" << lpNode << std::endl;
 #endif
-			return NULL;
+			return nullptr;
 		}
 
 		lpNode->m_lpLeft	= lpNewNode;
 /*
 		//Update the inorder loop list
-		if(lpNewNode->m_lpNext == NULL){
+		if(lpNewNode->m_lpNext == nullptr){
 			if(m_lpListHead == lpNode)
 				m_lpListHead	= lpNode->m_lpLeft;
 			lpTemp						= lpNode->m_lpPrev;
@@ -323,18 +323,18 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 
 	else{
 		//Memory allocation failure or the same key exist
-		if ((lpNewNode = insert_internal(lpNode->m_lpRight, key, value)) == NULL){
+		if ((lpNewNode = insert_internal(lpNode->m_lpRight, key, value)) == nullptr){
 #ifdef DEBUG
 			std::cerr << "Allocation to right node failure." << std::endl;
 			std::cerr << "lpNode:" << lpNode << std::endl;
 #endif
-			return NULL;
+			return nullptr;
 		}
 
 		lpNode->m_lpRight	= lpNewNode;
 /*
 		//Update the inorder list
-		if(lpNewNode->m_lpPrev == NULL){
+		if(lpNewNode->m_lpPrev == nullptr){
 			lpTemp						= lpNode->m_lpNext;
 			lpNode->m_lpNext			= lpNode->m_lpRight;
 			lpNode->m_lpRight->m_lpNext	= lpTemp;
@@ -357,8 +357,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find(KEY key)
 	wp	= m_lpTreeTop;
 
 	while(1){
-		if(wp == NULL){
-			return NULL;
+		if(wp == nullptr){
+			return nullptr;
 		}
 
 		else if(wp->m_key == key){
@@ -374,7 +374,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find(KEY key)
 		}
 	}
 
-	return NULL;
+	return nullptr;
 }
 
 //Remove node from the Tree
@@ -390,8 +390,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNo
 {
 	AVL_NODE<KEY, VAL>*	lpTmp;
 
-	if(lpNode == NULL){
-		lpTmp	= NULL;
+	if(lpNode == nullptr){
+		lpTmp	= nullptr;
 	}
 
 	//If this node is the target
@@ -399,9 +399,9 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNo
 		//Find the minimum node from right sub-tree.
 		lpTmp	= find_min(lpNode->m_lpRight);
 
-		//If it's NULL, that means, this node is the leaf.
+		//If it's nullptr, that means, this node is the leaf.
 		//Delete this Node.
-		if(lpTmp == NULL){
+		if(lpTmp == nullptr){
 			lpTmp	= lpNode->m_lpLeft;
 		}
 
@@ -436,13 +436,13 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find_min(AVL_NODE<KEY, VAL>* lpNode)
 {
 	AVL_NODE<KEY, VAL>*	lpTmp;
 
-	if(lpNode == NULL)
-		return NULL;
+	if(lpNode == nullptr)
+		return nullptr;
 
 	lpTmp	= lpNode;
 
 	while(1){
-		if(lpTmp->m_lpLeft == NULL)
+		if(lpTmp->m_lpLeft == nullptr)
 			break;
 
 		lpTmp	= lpTmp->m_lpLeft;
@@ -458,11 +458,11 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
 	AVL_NODE<KEY, VAL>*	lpTmp;
 
 	//Only one special case
-	if(lpNode == NULL)
-		lpTmp	= NULL;
+	if(lpNode == nullptr)
+		lpTmp	= nullptr;
 
 	//If this node has the minimum.
-	else if(lpNode->m_lpLeft == NULL){
+	else if(lpNode->m_lpLeft == nullptr){
 		lpTmp	= lpNode->m_lpRight;
 	}
 
@@ -486,7 +486,7 @@ unsigned long AVL_Tree<KEY, VAL>::size()
 template <class KEY, class VAL>
 unsigned int AVL_Tree<KEY, VAL>::get_height()
 {
-	if(m_lpTreeTop == NULL)
+	if(m_lpTreeTop == nullptr)
 		return 0;
 
 	return m_lpTreeTop->m_uHeight;

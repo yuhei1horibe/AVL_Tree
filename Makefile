@@ -2,26 +2,22 @@
 #
 OBJS = main.o
 CXX = g++
-CFLAGS = -std=c++11 -Wall -O2
+CFLAGS = -std=c++11 -std=gnu++11 -Wall -O2
 DEBUGFLAGS = -g
 OUTPUT = AVL_Tree.out
 
 .PHONY: all
 all: main
 
-.SUFFIXES: .o.cpp
-%.cpp%.o:
-	g++ $(CFLAGS) -c $<
-
 main: $(OBJS)
 	rm -rf debug.flag
 	cat AVL_Tree.h | sed 's/^\#define DEBUG/\/\/#define DEBUG/g' > tmp.h
 	mv tmp.h AVL_Tree.h
-	$(CXX) -o $(OUTPUT) $(OBJS) $(CFLAGS)
+	$(CXX) $(CFLAGS) -o $(OUTPUT) $(OBJS)
 
 .PHONY: debug
 debug: debug.flag $(OBJS)
-	$(CXX) -o $(OUTPUT) $(OBJS) $(CFLAGS)
+	$(CXX) $(CFLAGS) -o $(OUTPUT) $(OBJS) $(DEBUGFLAGS)
 
 debug.flag:
 	cat AVL_Tree.h | sed 's/^\/\/\#define DEBUG/\#define DEBUG/g' > tmp.h
@@ -29,10 +25,14 @@ debug.flag:
 	CFLAGS+=" $(DEBUGFLAGS)"
 	touch debug.flag
 
+.SUFFIXES: .o.cpp
+.cpp.o:
+	$(CXX) $(CFLAGS) -c $<
+
 main.o: AVL_Tree.h
 main.o: AVL_Tree.cpp
-main.o: TreeTest.h
-main.o: TreeTest.cpp
+main.o: DataStructure.h
+main.o: DataStructure.cpp
 
 .PHONY: clean
 clean:

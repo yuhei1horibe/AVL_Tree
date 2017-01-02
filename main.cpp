@@ -1,7 +1,7 @@
 #include <iostream>
 #include "AVL_Tree.h"
 #include "AVL_Tree.cpp"
-#include "TreeTest.cpp"
+#include "DataStructure.cpp"
 #include <stdlib.h>
 #include <time.h>
 

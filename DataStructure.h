@@ -1,12 +1,14 @@
 /**
  * @author Yuhei Horibe
- * Tree Structure Test
+ * structure Structure Test
  * 2016/12/25
  **/
 
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <iostream>
+#include <fstream>
 
 //Include Guard
 #ifndef __TEST_TYPE__
@@ -18,11 +20,18 @@ enum TEST_TYPE{
 };
 #endif
 
-//Tree generation test
+//structure generation test
 template <class STR_TYPE, class NODE>
 class DataStrTest{
 private:
 	STR_TYPE		m_DataStructure;
+
+	//Log file
+	std::ofstream	m_StatLog;
+	std::ofstream	m_ErrLog;
+
+	//Log enable
+	bool			m_bStatLogEn;
 
 	//Private method
 	bool	FindTest(unsigned int min, unsigned int max);
@@ -31,6 +40,9 @@ private:
 
 
 public:
+	//Constructor
+	DataStrTest();
+
 	//Repeat generation and release for given times
 	bool	GenerateAndRelease(TEST_TYPE type, unsigned int min, unsigned int max, unsigned int iteration);
 

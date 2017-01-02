@@ -1,15 +1,22 @@
 /**
  * @author Yuhei Horibe
- * Tree structure tests
+ * Data structure tests
  *
  * 2016/12/25
  * */
 
-#include "TreeTest.h"
+#include "DataStructure.h"
 #include <math.h>
 #include <time.h>
 #include <vector>
-#include <iostream>
+
+template <class STR_TYPE, class NODE>
+DataStrTest<STR_TYPE, NODE>::DataStrTest()
+{
+	//Random seed
+	//Don't generate random seed more than twice.
+	srand((unsigned int)time(nullptr));
+}
 
 template <class STR_TYPE, class NODE>
 bool DataStrTest<STR_TYPE, NODE>::GenerateAndRelease(TEST_TYPE type, unsigned int min, unsigned int max, unsigned int iteration)
@@ -93,21 +100,20 @@ bool DataStrTest<STR_TYPE, NODE>::GenerateAndRelease(TEST_TYPE type, unsigned in
 template <class STR_TYPE, class NODE>
 bool DataStrTest<STR_TYPE, NODE>::FindTest(unsigned int min, unsigned int max)
 {
-	unsigned int	i;
-	NODE*			tmp;
-	bool			bResult	= true;
-	unsigned int	key;
+	unsigned int		i;
+	NODE*				tmp;
+	bool				bResult	= true;
+	unsigned int		key;
+	std::vector<bool>	isGenerated(max - min, false);
 
 	if(max <= min)
 		return false;
-
-	srand((unsigned int)time(NULL));
 
 	//Sequential access (increasing)
 	for(i = min; i < max; i++){
 		tmp	= m_DataStructure.find(i);
 
-		if(tmp == NULL){
+		if(tmp == nullptr){
 			std::cerr << "Key:" << i << " not found." << std::endl;
 			bResult	&= false;
 		}
@@ -117,43 +123,54 @@ bool DataStrTest<STR_TYPE, NODE>::FindTest(unsigned int min, unsigned int max)
 	for(i = (max - 1); i >= min; i--){
 		tmp	= m_DataStructure.find(i);
 
-		if(tmp == NULL){
+		if(tmp == nullptr){
 			std::cerr << "Key:" << i << " not found." << std::endl;
 			bResult	&= false;
 		}
 	}
 
 	//Random access
-	for(i = 0; i < 2 * (max - min); i++){
+	//Test every single value in the structure
+	for(i = 0; i < (max - min); ){
 		key	= (rand() % (max - min)) + min;
 
-		tmp	= m_DataStructure.find(key);
-		if(tmp == NULL){
-			std::cerr << "Key:" << i << " not found." << std::endl;
-			bResult	&= false;
+		if(isGenerated[key - min] == false){
+			isGenerated[key - min]	= true;
+			tmp	= m_DataStructure.find(key);
+			if(tmp == nullptr){
+				std::cerr << "Key:" << i << " not found." << std::endl;
+				bResult	&= false;
+			}
+			i++;
 		}
 	}
 
 	return bResult;
 }
 
-//Sequential generation for Tree
+//Sequential generation for structure
 template <class STR_TYPE, class NODE>
 bool DataStrTest<STR_TYPE, NODE>::SeqGen(unsigned int boundary1, unsigned int boundary2)
 {
-	int			incr;
-	int			i;
-	NODE*		tmp;
+	int				incr;
+	int				i;
+	NODE*			tmp;
+	unsigned int	begin;
+	unsigned int	end;
 
 	if(boundary1 > boundary2){
+		begin	= boundary1 - 1;
+		end		= boundary2 - 1;
 		incr	= -1;
 	}
 
 	else{
+		begin	= boundary1;
+		end		= boundary2;
 		incr	= 1;
 	}
 
-	for(i = (signed int)boundary1; i != (signed int)boundary2; i += incr){
+	for(i = (signed int)begin; i != (signed int)end; i += incr){
 		if(m_DataStructure.insert(i, abs(boundary2 - boundary1) - i) == false){
 			std::cerr << "Insert i :" << i << " failed." << std::endl;
 			return false;
@@ -162,7 +179,7 @@ bool DataStrTest<STR_TYPE, NODE>::SeqGen(unsigned int boundary1, unsigned int bo
 		//Ensure that the inserted node found in the tree
 		tmp	= m_DataStructure.find(i);
 
-		if(tmp == NULL){
+		if(tmp == nullptr){
 			std::cerr << "Key i: " << i << " not found." << std::endl;
 			return false;
 		}
@@ -185,10 +202,6 @@ bool	DataStrTest<STR_TYPE, NODE>::RandGen(unsigned int min, unsigned int max)
 
 	std::vector<bool>	isGenerated(max - min, false);
 	unsigned int		uint_val;
-	NODE*				tmp;
-
-	//Random seed
-	srand((unsigned int)time(NULL));
 
 	//Randomly generate every value in between min and max
 	for(unsigned int i = 0; i < (max - min);){
