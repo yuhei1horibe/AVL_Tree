@@ -1,7 +1,6 @@
 # implementation of AVL Tree
 #
-OBJS = main.o 
-DBOBJS = ./debug/main.o
+OBJS = main.o
 CXX = g++
 CFLAGS = -std=c++11 -Wall -O2
 DEBUGFLAGS = -g
@@ -32,6 +31,8 @@ debug.flag:
 
 main.o: AVL_Tree.h
 main.o: AVL_Tree.cpp
+main.o: TreeTest.h
+main.o: TreeTest.cpp
 
 .PHONY: clean
 clean:

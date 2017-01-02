@@ -10,8 +10,8 @@
 
 #define	_AVL_TREE_H_
 
-#include<memory>
-#include<iostream>
+#include <memory>
+#include <iostream>
 
 #define DEBUG
 
@@ -109,10 +109,10 @@ public:
 	//Accessors for internal list
 	//Internaly, the list is looped,
 	//but it doesn't behave as looped list
-	AVL_NODE<KEY, VAL>*	rewind_to_head();
-	AVL_NODE<KEY, VAL>*	rewind_to_tail();
-	AVL_NODE<KEY, VAL>*	next();
-	AVL_NODE<KEY, VAL>*	prev();
+	AVL_NODE<KEY, VAL>&	rewind_to_head();
+	AVL_NODE<KEY, VAL>&	rewind_to_tail();
+	AVL_NODE<KEY, VAL>&	next();
+	AVL_NODE<KEY, VAL>&	prev();
 };
 
 }

@@ -391,11 +391,11 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNo
 	AVL_NODE<KEY, VAL>*	lpTmp;
 
 	if(lpNode == NULL){
-		return NULL;
+		lpTmp	= NULL;
 	}
 
 	//If this node is the target
-	if(key == lpNode->m_key){
+	else if(key == lpNode->m_key){
 		//Find the minimum node from right sub-tree.
 		lpTmp	= find_min(lpNode->m_lpRight);
 
@@ -407,10 +407,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_internal(AVL_NODE<KEY, VAL>* lpNo
 
 		else{
 			//Remove the node has minimum value from right sub-tree.
-			lpNode->m_lpRight	= remove_min(lpNode->m_lpRight);
-
 			//Replace this node to the minimum node from right.
-			lpTmp->m_lpRight	= lpNode->m_lpRight;
+			lpTmp->m_lpRight	= remove_min(lpNode->m_lpRight);
 			lpTmp->m_lpLeft		= lpNode->m_lpLeft;
 		}
 		delete lpNode;
@@ -445,12 +443,11 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::find_min(AVL_NODE<KEY, VAL>* lpNode)
 
 	while(1){
 		if(lpTmp->m_lpLeft == NULL)
-			return lpTmp;
+			break;
 
 		lpTmp	= lpTmp->m_lpLeft;
 	}
-	//Unreacheable
-	return NULL;
+	return lpTmp;
 }
 
 //Remove the node has minimum value
@@ -462,7 +459,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
 
 	//Only one special case
 	if(lpNode == NULL)
-		return NULL;
+		lpTmp	= NULL;
 
 	//If this node has the minimum.
 	else if(lpNode->m_lpLeft == NULL){
