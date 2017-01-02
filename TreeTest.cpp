@@ -22,12 +22,19 @@ bool DataStrTest<STR_TYPE, NODE>::GenerateAndRelease(TEST_TYPE type, unsigned in
 			for(i = 0; i < iteration; i++){
 				if(SeqGen(min, max) == true){
 					bResult	&= FindTest(min, max);
-					m_DataStructure.release_all();
+#ifdef DEBUG
+					if(m_DataStructure.get_height() > ceil(log(abs(max - min)) / log(2))){
+						std::cerr << "Height: " << m_DataStructure.get_height() << std::endl;
+						std::cerr << "log n :" << log(abs(max - min)) / log(2) << std::endl;
+					}
+#endif
+
+					m_DataStructure.release();
 				}
 
 				else{
 					std::cerr << "Generation error" << std::endl;
-					m_DataStructure.release_all();
+					m_DataStructure.release();
 					bResult	= false;
 				}
 			}
@@ -37,12 +44,18 @@ bool DataStrTest<STR_TYPE, NODE>::GenerateAndRelease(TEST_TYPE type, unsigned in
 			for(i = 0; i < iteration; i++){
 				if(SeqGen(max, min) == true){
 					bResult	&= FindTest(min, max);
-					m_DataStructure.release_all();
+#ifdef DEBUG
+					if(m_DataStructure.get_height() > ceil(log(abs(max - min)) / log(2))){
+						std::cerr << "Height: " << m_DataStructure.get_height() << std::endl;
+						std::cerr << "log n :" << log(abs(max - min)) / log(2) << std::endl;
+					}
+#endif
+					m_DataStructure.release();
 				}
 
 				else{
 					std::cerr << "Generation error" << std::endl;
-					m_DataStructure.release_all();
+					m_DataStructure.release();
 					bResult	= false;
 				}
 			}
@@ -52,19 +65,25 @@ bool DataStrTest<STR_TYPE, NODE>::GenerateAndRelease(TEST_TYPE type, unsigned in
 			for(i = 0; i < iteration; i++){
 				if(RandGen(min, max) == true){
 					bResult	&= FindTest(min, max);
-					m_DataStructure.release_all();
+#ifdef DEBUG
+					if(m_DataStructure.get_height() > 10 + ceil(log(abs(max - min)) / log(2))){
+						std::cerr << "Height: " << m_DataStructure.get_height() << std::endl;
+						std::cerr << "log n :" << log(abs(max - min)) / log(2) << std::endl;
+					}
+#endif
+					m_DataStructure.release();
 				}
 
 				else{
 					std::cerr << "Generation error" << std::endl;
-					m_DataStructure.release_all();
+					m_DataStructure.release();
 					bResult	= false;
 				}
 			}
 			break;
 
 		default:
-			std::cout << "Default executed." << std::endl;
+			std::cerr << "Default executed." << std::endl;
 			break;
 	}
 	return bResult;
@@ -181,7 +200,7 @@ bool	DataStrTest<STR_TYPE, NODE>::RandGen(unsigned int min, unsigned int max)
 			i++;
 			if(m_DataStructure.insert(uint_val, (max - min) - uint_val) == false){
 				std::cerr << "Insert error. Key: " << uint_val << " failed." << std::endl;
-				m_DataStructure.release_all();
+				m_DataStructure.release();
 				return false;
 			}
 		}

@@ -103,8 +103,12 @@ public:
 	AVL_NODE<KEY, VAL>*	find(KEY key);
 	bool				insert(KEY key, VAL val);
 	void				remove(KEY key);
-	void				release_all();
+	void				release();
 	unsigned long		size();
+
+#ifdef DEBUG
+	unsigned int		get_height();
+#endif
 
 	//Accessors for internal list
 	//Internaly, the list is looped,

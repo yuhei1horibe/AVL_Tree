@@ -24,7 +24,7 @@ int main(int argc, char *argv[])
 	Test.GenerateAndRelease(SEQ_NORMAL, MIN, MAX, ITERATION);
 
 	cout << "Start testing sequential generation (reversed order)." << endl;
-	Test.GenerateAndRelease(SEQ_REVERSE, MAX, MIN, ITERATION);
+	Test.GenerateAndRelease(SEQ_REVERSE, MIN, MAX, ITERATION);
 
 	cout << "Start testing random generation." << endl;
 	Test.GenerateAndRelease(RANDOM, MIN, MAX, ITERATION);

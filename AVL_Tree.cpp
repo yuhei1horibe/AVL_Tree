@@ -202,7 +202,7 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::balance(AVL_NODE<KEY, VAL>* lpNode)
 
 //Release all of tree nodes
 template <class KEY, class VAL>
-void AVL_Tree<KEY, VAL>::release_all()
+void AVL_Tree<KEY, VAL>::release()
 {
 	ReleasePartialTree(m_lpTreeTop);
 
@@ -479,3 +479,17 @@ unsigned long AVL_Tree<KEY, VAL>::size()
 {
 	return m_ulCount;
 }
+
+//Debug mode only
+//Return the height of the tree
+#ifdef DEBUG
+template <class KEY, class VAL>
+unsigned int AVL_Tree<KEY, VAL>::get_height()
+{
+	if(m_lpTreeTop == NULL)
+		return 0;
+
+	return m_lpTreeTop->m_uHeight;
+}
+#endif
+
