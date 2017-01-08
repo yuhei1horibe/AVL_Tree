@@ -236,14 +236,10 @@ void AVL_Tree<KEY, VAL>::ReleasePartialTree(AVL_NODE<KEY, VAL>* lpNode)
 template <class KEY, class VAL>
 bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 {
-	AVL_NODE<KEY, VAL>*	tmp;
+	AVL_NODE<KEY, VAL>*	tmp = nullptr;
 
 	//In case of memory allocation failure or same key exist, return false
 	if((tmp = insert_internal(m_lpTreeTop, key, value)) == nullptr){
-#ifdef DEBUG
-		std::cerr << "Allocation Failure." << std::endl;
-		std::cerr << "Or the key already exist" << std::endl;
-#endif
 		return false;
 	}
 	m_lpTreeTop	= tmp;
@@ -267,7 +263,7 @@ bool AVL_Tree<KEY, VAL>::insert(KEY key, VAL value)
 template <class KEY, class VAL>
 AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNode, KEY key, VAL value)
 {
-	AVL_NODE<KEY, VAL>*		lpNewNode;
+	AVL_NODE<KEY, VAL>*		lpNewNode	= nullptr;
 	//AVL_NODE<KEY, VAL>*		lpTemp;
 
 	//lpTemp	= nullptr;
@@ -276,12 +272,17 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::insert_internal(AVL_NODE<KEY, VAL>* lpNo
 	if(lpNode == nullptr){
 		//Set key and value
 		//left and right pointers are initialized to "nullptr"by constructor
-		lpNewNode			= new AVL_NODE<KEY, VAL>(key, value);
-
-
+		try{
+			lpNewNode	= new AVL_NODE<KEY, VAL>(key, value);
+		}
+		catch(std::bad_alloc &e){
+			std::cerr << "Node allocation failure. " << e.what() << std::endl;
+		}
+		
 		//If allocation failure, return nullptr
-		if(lpNewNode == nullptr)
+		if(lpNewNode == nullptr){
 			return nullptr;
+		}
 
 		return lpNewNode;
 	}
@@ -455,7 +456,7 @@ template<class KEY, class VAL>
 AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
 {
 	
-	AVL_NODE<KEY, VAL>*	lpTmp;
+	AVL_NODE<KEY, VAL>*	lpTmp	= nullptr;
 
 	//Only one special case
 	if(lpNode == nullptr)
@@ -467,8 +468,8 @@ AVL_NODE<KEY, VAL>* AVL_Tree<KEY, VAL>::remove_min(AVL_NODE<KEY, VAL>* lpNode)
 	}
 
 	else{
-		lpTmp	= remove_min(lpTmp->m_lpLeft);
-		lpTmp	= balance(lpTmp);
+		lpNode->m_lpLeft	= remove_min(lpNode->m_lpLeft);
+		lpTmp				= balance(lpNode);
 	}
 	return lpTmp;
 }

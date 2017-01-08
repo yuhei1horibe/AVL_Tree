@@ -3,4 +3,5 @@
 !.gitignore
 *.swp
 *.log
+log
 

@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <iostream>
+#include <exception>
 
 #define DEBUG
 
@@ -108,6 +109,7 @@ public:
 
 #ifdef DEBUG
 	unsigned int		get_height();
+	bool				isRootNull();	//Check tree root is null.
 #endif
 
 	//Accessors for internal list

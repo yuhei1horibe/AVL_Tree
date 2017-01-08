@@ -2,7 +2,7 @@
 #
 OBJS = main.o
 CXX = g++
-CFLAGS = -std=c++11 -std=gnu++11 -Wall -O2
+CFLAGS = -std=c++11 -std=gnu++11 -Wall -g
 DEBUGFLAGS = -g
 OUTPUT = AVL_Tree.out
 
@@ -31,8 +31,8 @@ debug.flag:
 
 main.o: AVL_Tree.h
 main.o: AVL_Tree.cpp
-main.o: DataStructure.h
-main.o: DataStructure.cpp
+main.o: DataStructureTest.h
+main.o: DataStructureTest.cpp
 
 .PHONY: clean
 clean:
