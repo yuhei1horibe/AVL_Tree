@@ -14,7 +14,7 @@
 #include <iostream>
 #include <exception>
 
-#define DEBUG
+//#define DEBUG
 
 namespace myAVL{
 
